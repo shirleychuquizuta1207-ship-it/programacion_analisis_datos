@@ -1,0 +1,158 @@
+---
+# title: "Efecto de diferentes tipos de sustrato y la aplicación de Trichoderma spp. sobre el crecimiento vegetativo del arándano (Vaccinium corymbosum L.) mediante un diseño factorial en bloques completos al azar (DBCA)."
+format:
+  html:
+    toc: true
+    toc-expand: true
+    toc-depth: 4
+    toc-location: left
+    number-sections: true
+    self-contained: true
+    code-fold: false
+editor_options: 
+  chunk_output_type: console
+execute: 
+  warning: false
+  message: false
+  echo: true
+---
+
+# Project Setup
+
+```{r}
+#| label: setup
+
+source('https://inkaverse.com/setup.r')
+```
+
+# Diseño de experimentos
+
+## DBCA factorial
+
+Experimento: Se propone evaluar el efecto de dos tipos de sustrato y la aplicación de *Trichoderma spp.* sobre el crecimiento vegetativo del cultivo de arándano (*Vaccinium corymbosum* L.), mediante un diseño de bloques completos al azar (DBCA) con arreglo factorial 2 × 2. El factor A estará conformado por dos tipos de sustrato: fibra de coco y mezcla de fibra de coco con corteza de pino. El factor B corresponderá a la aplicación de *Trichoderma spp.*, con dos niveles: sin aplicación y con aplicación. El experimento tendrá cinco repeticiones, haciendo un total de 20 unidades experimentales.
+
+> https://inkaverse.com/
+
+### Código
+
+> https://inkaverse.com/articles/DoE-2_RCBD.html
+
+```{r}
+# 1. Define factors: sustrato y trichoderma
+factors <- list(
+  Sustrato = c("Fibra_coco", "Coco_pino"),
+  Trichoderma = c("Sin", "Con")
+)
+
+# Tratamiento? => 4
+# 2. Generate factorial RCBD layout
+design <- design_repblock(
+  nfactors = 2,
+  factors = factors,
+  type = "rcbd",
+  rep = 5,
+  zigzag = TRUE,
+  seed = 2026
+)
+
+# UE? => 20
+# Fieldbook preview
+fb <- design$fieldbook
+
+fb %>%
+  knitr::kable(caption = "Fieldbook preview")
+```
+
+### Croquis experimental
+
+```{r}
+
+# Spatial layout visualization
+tarpuy_plotdesign(
+  data = design,
+  factor = "Sustrato",
+  fill = c("plots", "Trichoderma")
+)
+```
+
+### Etiquetas
+
+```{r}
+font <- c("Permanent Marker", "Tillana", "Courgette")
+
+huito_fonts(font)
+```
+
+```{r}
+label <- fb %>%
+  label_layout(
+    size = c(5.2, 10)
+    , border_color = "#5C0000"
+    , border_width = 1.5
+  ) %>%
+  include_image(
+    value = "https://inkaverse.com/img/inkaverse.png"
+    , size = c(1.3, 1.5)
+    , position = c(0.8, 9.1)
+  )  %>%
+  include_text(
+    value = "plots"
+    , position = c(4.2, 9.1)
+    , size = 20
+    , color = "black"
+    , fontface = "bold"
+    , font = font[1]
+  )  %>%
+  include_image(value = "https://huito.inkaverse.com/img/scale.pdf"
+                , size = c(5, 1)
+                , position = c(2.6, 7.7)) %>%
+  include_barcode(value = "qrcode"
+                  , size = c(5, 5)
+                  , position = c(2.6, 4.7)) %>%
+  include_text(
+    value = "Sustrato"
+    ,
+    position = c(2.6, 2)
+    ,
+    size = 12
+    ,
+    prefix = "Sustrato: "
+    ,
+    color = "blue"
+    ,
+    font = font[2]
+    , 
+    fontface = "bold"
+  )  %>%
+    include_text(
+    value = "Trichoderma"
+    ,
+    position = c(2.6, 1.5)
+    ,
+    size = 12
+    ,
+    prefix = "Trichoderma: "
+    ,
+    color = "red"
+    ,
+    font = font[2]
+    , 
+    fontface = "bold"
+  ) |> 
+  include_image(value = "https://huito.inkaverse.com/img/scale.pdf"
+                ,
+                size = c(5, 1)
+                ,
+                position = c(2.6, 0.6)) 
+
+label %>% 
+  label_print(mode = "preview")
+```
+
+```{r}
+label %>% 
+  label_print(mode = "complete"
+              , filename = "vertical-DBCA-2"
+             )
+```
+
